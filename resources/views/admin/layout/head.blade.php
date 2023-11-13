@@ -19,7 +19,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-
+    <link rel="stylesheet" href="{{asset('richtexteditor/rte_theme_default.css')}}">
+    <script src="{{asset('richtexteditor/rte.js')}}"></script>
     <style>
 
         .LockOn {

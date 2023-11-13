@@ -17,10 +17,16 @@ class CreatePartnersTable extends Migration
             $table->id();
             $table->longText('name')->nullable();
             $table->longText('shop_name')->nullable();
+            $table->longText('email')->nullable();
             $table->longText('shopify_domain')->nullable();
             $table->longText('shopify_token')->nullable();
             $table->longText('api_key')->nullable();
             $table->longText('api_secret')->nullable();
+            $table->bigInteger('user_id')->nullable();
+            $table->bigInteger('status')->default(1);
+            $table->double('price_multiplier')->nullable();
+            $table->double('compare_at_price_multiplier')->nullable();
+            $table->string('platform')->nullable();
             $table->timestamps();
         });
     }

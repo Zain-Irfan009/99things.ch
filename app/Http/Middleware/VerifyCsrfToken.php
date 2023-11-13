@@ -12,6 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        'replysms','save-payment-detail','clicksend-replysms'
+        'product-webhook','delete-product-webhook'
     ];
 }

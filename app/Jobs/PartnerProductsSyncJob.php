@@ -11,18 +11,19 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class RandomOrderDeleteJob implements ShouldQueue
+class PartnerProductsSyncJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $timeout = 3600;
+    public $partner;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($partner)
     {
-        //
+        $this->partner=$partner;
     }
 
     /**
@@ -32,14 +33,8 @@ class RandomOrderDeleteJob implements ShouldQueue
      */
     public function handle()
     {
-        $shop = User::where('name','awakewater-earth.myshopify.com')->first();
-        $orders=Order::orderBy('id', 'DESC')->take(200)->get();
-        foreach ($orders as $order){
-            $cancel = $shop->api()->rest('post', '/admin/orders/'.$order->shopify_order_id.'/cancel.json',[
-                'order'=>[
-                ]
-            ]);
-            $delete = $shop->api()->rest('delete', '/admin/orders/'.$order->shopify_order_id.'.json');
-        }
+        $response_create = $this->api($this->partner)->rest('get', '/admin/products.json', [
+            'limit' => 250,
+        ]);
     }
 }

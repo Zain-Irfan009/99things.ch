@@ -14,7 +14,9 @@ class AddWebhookProductCreateIdToPartnersTable extends Migration
     public function up()
     {
         Schema::table('partners', function (Blueprint $table) {
-            //
+            $table->longText('webhook_product_create_id')->nullable();
+            $table->longText('webhook_product_update_id')->nullable();
+            $table->longText('webhook_product_delete_id')->nullable();
         });
     }
 
