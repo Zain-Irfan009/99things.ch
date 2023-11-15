@@ -65,7 +65,7 @@
                             <option value=''  selected="">App Status</option>
                             <option value="0" {{ Request::get('status') == "0" ? 'selected' : '' }}>Pending</option>
                             <option value="1" {{ Request::get('status') == "1" ? 'selected' : '' }}>Approved</option>
-                            <option value="2" {{ Request::get('status') == "2" ? 'selected' : '' }}>Changes Pending</option>
+{{--                            <option value="2" {{ Request::get('status') == "2" ? 'selected' : '' }}>Changes Pending</option>--}}
                             <option value="3" {{ Request::get('status') == "3" ? 'selected' : '' }}>Deny</option>
 
                         </select>
@@ -91,7 +91,7 @@
                         <div class="mb-3">
 
                             <div class="form-floating mb-3">
-                                <input class="form-control" type="date" value="@if(Request::get('date') != '') {{ date('m/d/Y', strtotime(Request::get('date'))) }} @else {{ 'Select Date' }} @endif" onblur='filterByDate(this.value)' id="datepicker-icon" />
+                                <input class="form-control" type="date" value="{{$request->date}}" onblur='filterByDate(this.value)' id="datepicker-icon" />
 
                                 <label for="floating-input">Date</label>
                             </div>
@@ -168,9 +168,9 @@
                                                             <a class="dropdown-item" href="{{url('shopify-create')}}/{{$product->id}}">Approve</a>
                                                                 @endif
                                                             @if($product->app_status==1)
-                                                            <a class="dropdown-item" href="{{url('reject-product')}}/{{$product->id}}">Deny</a>
+                                                            <a class="dropdown-item delete_btn" data-confirm="Are you sure you want to delete this Partner?" href="{{url('reject-product')}}/{{$product->id}}">Deny</a>
                                                                 @endif
-                                                            <a class="dropdown-item delete_btn"  href="{{url('product-view')}}/{{$product->id}}">View</a>
+                                                            <a class="dropdown-item "  href="{{url('product-view')}}/{{$product->id}}">View</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -205,7 +205,7 @@
         <input type="hidden" id="action" name="action" value="">
     </form>
 
-
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
 
         function filterByPartner(id)
@@ -310,6 +310,27 @@
                var text= $(this).data('action');
                $('#action').val(text);
                 $('#selected_ids_form').submit();
+            });
+
+            $(document).on('click', '.delete_btn', function (e) {
+                e.preventDefault();
+
+                var deleteLink = $(this).attr('href');
+                var confirmationMessage = $(this).data('confirm');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: confirmationMessage,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Delete!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = deleteLink;
+                    }
+                });
             });
 
         });

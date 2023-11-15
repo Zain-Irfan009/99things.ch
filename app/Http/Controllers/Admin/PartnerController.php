@@ -95,6 +95,8 @@ class PartnerController extends BaseController
                 $partner->webhook_product_update_id = $response_update->body->webhook->id;
                 $partner->webhook_product_delete_id = $response_delete->body->webhook->id;
                 $partner->save();
+
+                PartnerProductsSyncJob::dispatch($partner->id);
             }
 
             return back()->with('success', 'Partner Details Save Successfully');
@@ -216,9 +218,17 @@ dd($response);
     }
 
 
+
+    public function SyncProduct($id){
+        $partner=Partner::find($id);
+        if($partner){
+            PartnerProductsSyncJob::dispatch($partner->id);
+        }
+        return back()->with('success', 'Partner Products Sync In-Progress');
+    }
+
     public function SyncPartnerProducts($id,$next = null){
         $partner=Partner::find($id);
-//        PartnerProductsSyncJob::dispatch($partner);
 
         $products = $this->api($partner)->rest('get', '/admin/products.json', [
             'limit' => 250,

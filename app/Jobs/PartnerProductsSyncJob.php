@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\Admin\PartnerController;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -33,8 +34,8 @@ class PartnerProductsSyncJob implements ShouldQueue
      */
     public function handle()
     {
-        $response_create = $this->api($this->partner)->rest('get', '/admin/products.json', [
-            'limit' => 250,
-        ]);
+
+        $partnerController=new PartnerController();
+        $partnerController->SyncPartnerProducts($this->partner);
     }
 }

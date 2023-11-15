@@ -70,6 +70,9 @@ class ApprovedProductJob implements ShouldQueue
 
                if($product->shopify_id==null)
                {
+                   $product->shopify_status='In-Progress';
+                   $product->save();
+
                    $variants=[];
                    $product_variants =ProductVariant::where('partner_shopify_product_id',$product->partner_shopify_id)->where('partner_id',$partner->id)->get();
                    $variant_image_ids_array = array();
@@ -120,51 +123,54 @@ class ApprovedProductJob implements ShouldQueue
 
                    $result =$shop->api()->rest('post', '/admin/products.json',$products_array);
                    $result = json_decode(json_encode($result));
+                   if($result->errors==false) {
 
 
+                       $shopify_product_id = $result->body->product->id;
 
-                   $shopify_product_id = $result->body->product->id;
+                       Product::where('id', $product->id)->update(['shopify_id' => $shopify_product_id, 'app_status' => '1', 'approve_date' => Carbon::now()]);
 
-                   Product::where('id', $product->id)->update(['shopify_id' => $shopify_product_id, 'app_status' => '1', 'approve_date' => Carbon::now()]);
-
-                   foreach ($result->body->product->variants as $prd) {
-                       ProductVariant::where('sku', $prd->sku)->update(['inventory_item_id' => $prd->inventory_item_id, 'shopify_id' => $prd->id,'shopify_product_id'=>$shopify_product_id]);
-                   }
-
-                   $product_images = ProductImage::where('product_id',$product->partner_shopify_id)->get();
-
-                   foreach($product_images as $index=> $img_val)
-                   {
-
-                       $product_variant=ProductVariant::where('image_id',$img_val->image_id)->first();
-
-                       if($product_variant) {
-
-                           $data = array(
-                               'src' => $img_val->image,
-                               'alt' => $img_val->alt,
-                               'variant_ids' => [$product_variant->shopify_id]
-
-                           );
-                       }else{
-                           $data = array(
-                               'src' => $img_val->image,
-                               'alt' => $img_val->alt,
-
-
-                           );
+                       foreach ($result->body->product->variants as $prd) {
+                           ProductVariant::where('sku', $prd->sku)->update(['inventory_item_id' => $prd->inventory_item_id, 'shopify_id' => $prd->id, 'shopify_product_id' => $shopify_product_id]);
                        }
 
+                       $product_images = ProductImage::where('product_id', $product->partner_shopify_id)->get();
 
-                       $result = $shop->api()->rest('post', '/admin/products/'.$shopify_product_id.'/images.json', [
-                           'image' => $data
-                       ]);
+                       foreach ($product_images as $index => $img_val) {
 
+                           $product_variant = ProductVariant::where('image_id', $img_val->image_id)->first();
+
+                           if ($product_variant) {
+
+                               $data = array(
+                                   'src' => $img_val->image,
+                                   'alt' => $img_val->alt,
+                                   'variant_ids' => [$product_variant->shopify_id]
+
+                               );
+                           } else {
+                               $data = array(
+                                   'src' => $img_val->image,
+                                   'alt' => $img_val->alt,
+
+
+                               );
+                           }
+
+
+                           $result = $shop->api()->rest('post', '/admin/products/' . $shopify_product_id . '/images.json', [
+                               'image' => $data
+                           ]);
+
+                       }
+
+                       $product->shopify_status = 'Complete';
+                       $product->save();
                    }
-
-                   $product->shopify_status='Complete';
-                   $product->save();
-
+                   else{
+                       $product->shopify_status='Failed';
+                       $product->save();
+                   }
                }
 
        }

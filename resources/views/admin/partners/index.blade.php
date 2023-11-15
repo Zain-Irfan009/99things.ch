@@ -189,7 +189,7 @@
                                                     <a class="dropdown-item" href="{{ route('sync.partner.products', $partner->id)}}">
                                                         Sync Products
                                                     </a>
-                                                    <a class="dropdown-item delete_btn"   data-confirm="Are you sure you want to delete this item?" href="{{ route('delete.partner', $partner->id)}}">
+                                                    <a class="dropdown-item delete_btn"   data-confirm="Are you sure you want to delete this Partner?" href="{{ route('delete.partner', $partner->id)}}">
                                                         Delete
                                                     </a>
                                                 </div>

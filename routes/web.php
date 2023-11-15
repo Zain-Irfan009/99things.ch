@@ -29,7 +29,7 @@ Route::group(['middleware' => ['auth.shopify']], function () {
     Route::get('partner-detail/{id}', [App\Http\Controllers\Admin\PartnerController::class, 'ViewPartnerDetail'])->name('view.partner');
     Route::post('partner-multiplier-setting-save', [App\Http\Controllers\Admin\PartnerController::class, 'PartnerMultiplierSettingSave'])->name('partner.multiplier.setting.save');
     Route::post('partner-setting-save', [App\Http\Controllers\Admin\PartnerController::class, 'PartnerSettingSave'])->name('partner.setting.save');
-    Route::get('sync-partner-products/{id}', [App\Http\Controllers\Admin\PartnerController::class, 'SyncPartnerProducts'])->name('sync.partner.products');
+    Route::get('sync-partner-products/{id}', [App\Http\Controllers\Admin\PartnerController::class, 'SyncProduct'])->name('sync.partner.products');
 
 
 
