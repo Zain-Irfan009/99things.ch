@@ -12,7 +12,7 @@
         left:unset !important;
     }
     .table-responsive{
-        min-height: 320px;
+        min-height: 200px;
     }
 </style>
 @section('content')

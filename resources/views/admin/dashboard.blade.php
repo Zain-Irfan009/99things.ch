@@ -10,6 +10,9 @@
     .page-title{
         font-size: 17px !important;
     }
+    .link_modify{
+        text-decoration: none !important;
+    }
 </style>
 @section('content')
 
@@ -27,6 +30,7 @@
             <div class="col-12">
                 <div class="row row-cards">
                     <div class="col-sm-6 col-lg-4">
+                        <a class="link_modify" href="{{route('partner')}}">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -44,8 +48,11 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
+
                     <div class="col-sm-6 col-lg-4">
+                        <a class="link_modify" href="{{route('products')}}">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -63,6 +70,7 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
 
 
@@ -81,6 +89,7 @@
             <div class="col-12">
                 <div class="row row-cards">
                     <div class="col-sm-6 col-lg-4">
+                        <a class="link_modify" href="{{route('products')}}">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -99,8 +108,10 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                     <div class="col-sm-6 col-lg-4">
+                        <a class="link_modify" href="{{route('products')}}">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -118,8 +129,10 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                     <div class="col-sm-6 col-lg-4">
+                        <a class="link_modify" href="{{route('products')}}">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -137,6 +150,7 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
 
 
@@ -155,6 +169,7 @@
             <div class="col-12 mt-3">
                 <div class="row row-cards">
                     <div class="col-sm-6 col-lg-3">
+                        <a class="link_modify" href="{{route('products')}}">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -173,8 +188,10 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                     <div class="col-sm-6 col-lg-3">
+                        <a class="link_modify" href="{{route('products')}}">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -192,8 +209,10 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                     <div class="col-sm-6 col-lg-3">
+                        <a class="link_modify" href="{{route('products')}}">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -211,8 +230,10 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                     <div class="col-sm-6 col-lg-3">
+                        <a class="link_modify" href="{{route('products')}}">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -230,6 +251,7 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
 
 
