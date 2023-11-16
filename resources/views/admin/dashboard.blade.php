@@ -7,6 +7,9 @@
     .font-weight-medium{
         color: black;
     }
+    .page-title{
+        font-size: 17px !important;
+    }
 </style>
 @section('content')
 
@@ -151,7 +154,7 @@
 
             <div class="col-12 mt-3">
                 <div class="row row-cards">
-                    <div class="col-sm-6 col-lg-4">
+                    <div class="col-sm-6 col-lg-3">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -171,7 +174,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
+                    <div class="col-sm-6 col-lg-3">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -190,7 +193,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
+                    <div class="col-sm-6 col-lg-3">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">
@@ -209,7 +212,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
+                    <div class="col-sm-6 col-lg-3">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="row align-items-center">

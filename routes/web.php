@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth.shopify']], function () {
     Route::get('delete-partner/{id}', [App\Http\Controllers\Admin\PartnerController::class, 'DeletePartner'])->name('delete.partner');
     Route::get('partner-status-change', [App\Http\Controllers\Admin\PartnerController::class, 'PartnerStatusChange'])->name('partner.status.change');
     Route::get('partner-detail/{id}', [App\Http\Controllers\Admin\PartnerController::class, 'ViewPartnerDetail'])->name('view.partner');
+    Route::post('partner-autopush-setting-save', [App\Http\Controllers\Admin\PartnerController::class, 'PartnerAutoPushSettingSave'])->name('partner.auto_push.setting.save');
     Route::post('partner-multiplier-setting-save', [App\Http\Controllers\Admin\PartnerController::class, 'PartnerMultiplierSettingSave'])->name('partner.multiplier.setting.save');
     Route::post('partner-setting-save', [App\Http\Controllers\Admin\PartnerController::class, 'PartnerSettingSave'])->name('partner.setting.save');
     Route::get('sync-partner-products/{id}', [App\Http\Controllers\Admin\PartnerController::class, 'SyncProduct'])->name('sync.partner.products');
@@ -51,9 +52,13 @@ Route::group(['middleware' => ['auth.shopify']], function () {
     Route::post('update-product-detail',[\App\Http\Controllers\Admin\ProductController::class,'UpdateProductDetail'])->name('update.product.detail');
 
 
+        //Logs
+    Route::get('logs',[\App\Http\Controllers\Admin\DashboardController::class,'Logs'])->name('logs');
+
     //Settings
     Route::get('settings', [App\Http\Controllers\Admin\SettingController::class, 'Settings'])->name('settings');
     Route::post('setting-save', [App\Http\Controllers\Admin\SettingController::class, 'SettingsSave'])->name('setting.save');
+    Route::post('shop-details-setting-save', [App\Http\Controllers\Admin\SettingController::class, 'ShopDetailsSettingsSave'])->name('shop.details.setting.save');
 
 
 

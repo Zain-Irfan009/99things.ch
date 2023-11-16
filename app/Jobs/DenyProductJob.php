@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Http\Controllers\Admin\ProductController;
 use App\Models\CustomLog;
+use App\Models\Log;
 use App\Models\Order;
 use App\Models\Partner;
 use App\Models\Product;
@@ -48,18 +49,44 @@ class DenyProductJob implements ShouldQueue
         $setting=Setting::where('shop_id',$shop->id)->first();
        $product_ids=explode(',',$this->product_ids);
 
-       foreach ($product_ids as $product_id){
+       if(count($product_ids) > 0) {
+           $log = new Log();
+           $currentTime = now();
+           $log->name = 'Deny Product';
+           $log->date = $currentTime->format('F j, Y');
+           $log->total_products = count($product_ids);
+           $log->start_time = $currentTime->toTimeString();
+           $log->status = 'Pending';
+           $log->save();
+           try {
+               $currentTime = now();
+               $log->end_time = $currentTime->toTimeString();
+               $log->status = 'In-Progress';
+               $log->save();
+               foreach ($product_ids as $product_id) {
 
-               $product=Product::find($product_id);
+                   $product = Product::find($product_id);
 
-               if($product->shopify_id)
-               {
-                   $result = $shop->api()->rest('delete', '/admin/products/'.$product->shopify_id.'.json');
-                   if($result['errors']==false) {
-                       Product::where('id', $product_id)->update(['app_status' => '3', 'shopify_status' => 'Pending', 'shopify_id' => null, 'approve_date' => Carbon::now()]);
+                   if ($product->shopify_id) {
+                       $result = $shop->api()->rest('delete', '/admin/products/' . $product->shopify_id . '.json');
+                       if ($result['errors'] == false) {
+                           Product::where('id', $product_id)->update(['app_status' => '3', 'shopify_status' => 'Pending', 'shopify_id' => null, 'approve_date' => Carbon::now()]);
 
+                       }
                    }
+
                }
+               $currentTime = now();
+               $log->date = $currentTime->format('F j, Y');
+               $log->end_time = $currentTime->toTimeString();
+               $log->status = 'Complete';
+               $log->save();
+           }catch (\Exception $exception){
+               $currentTime = now();
+               $log->end_time = $currentTime->toTimeString();
+               $log->status = 'Failed';
+               $log->save();
+           }
 
        }
     }

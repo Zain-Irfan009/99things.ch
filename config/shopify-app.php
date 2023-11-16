@@ -389,6 +389,8 @@ return [
     */
 
     'after_authenticate_job' => [
+        'job' => \App\Jobs\AfterAuthenticateJob::class,
+        'inline' => true,
         /*
             [
                 'job' => env('AFTER_AUTHENTICATE_JOB'), // example: \App\Jobs\AfterAuthorizeJob::class

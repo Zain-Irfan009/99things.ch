@@ -25,33 +25,26 @@
 
 
             <div class="">
+                <div class="row">
+                    <div class="col-8">
                 <h1 class="page-title">
-                    Partner Detail
-                </h1>
-
-                <div class="col-md-12 card card-border-radius mt-3 pt-2 pb-2">
-                    <div class="row ">
-                        <div class="col-md-1">
-                            <div class="custom-left-arrow-div " >
-                                <a style="text-decoration: none; padding:19px; font-size: 25px; color: black;" href="{{route('partner')}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-                            </div>
-                        </div>
-                        <div class="col-md-6 ">
-                            <div><h2 style="margin-top: 3px;">{{$partner->name}}</h2></div>
-                        </div>
-
-                        <div class="col-md-1 ">
-                            <h4 style="margin-top: 6px"><span class="badge bg-success mx-4">@if($partner->status==1) Active @else UnActive @endif</span></h4>
-                        </div>
-
-
-
+                    <div class="custom-left-arrow-div " >
+                        <a style="text-decoration: none; padding:12px; font-size: 25px; color: black;" href="{{route('partner')}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
                     </div>
+                    {{$partner->name}}({{$partner->shop_name}})
+
+                </h1>
                 </div>
+                </div>
+
+
                 <div class="row">
                     <div class="col-sm-12" >
 
                         <div class="card bg-white border-0 mt-3 mb-3 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="card-title">Basic Details</h4>
+                            </div>
                             <div class="card-body bg-white border-light">
                                 <form method="post" action="{{route('partner.setting.save')}}">
                                     @csrf
@@ -59,15 +52,40 @@
                                     <input type="hidden" name="partner_id" value="{{$partner->id}}">
                                     <div class="card-body">
                                         <div class="row">
+                                            <div class="col-lg-6">
+                                                <label class="form-label">Name</label>
+                                                <input type="text"  value="{{$partner->name}}" class="form-control mt-2" name="name" placeholder="Partner Name">
+                                            </div>
 
                                         <div class="col-lg-6">
                                             <label class="form-label">Email</label>
                                             <input type="email" disabled value="{{$partner->email}}" class="form-control mt-2" name="email" placeholder="Partner Email">
                                         </div>
-                                        <div class="col-lg-6 ">
-                                            <label class="form-label">Shop Name</label>
+
+                                            <div class="col-lg-6 mt-2 ">
+                                                <label class="form-label">Platform</label>
+                                                <select class="form-control ">
+                                                        <option  value="{{$partner->platform}}">{{$partner->platform}}</option>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="col-lg-6 mt-2 ">
+                                            <label class="form-label">Store Name</label>
                                             <input type="text" disabled value="{{$partner->shop_name}}" class="form-control mt-2" name="shop_name" placeholder="Shop Name">
                                         </div>
+
+
+
+                                            <div class="col-lg-6 mt-2 ">
+                                                <label class="form-label">Store Language</label>
+                                                <select class="form-control " required name="store_language">
+                                                    <option value="">Select Store Language</option>
+                                                    @foreach($languages as $language)
+                                                        <option @if($partner->store_language_id==$language->id) selected @endif  value="{{$language->id}}">{{$language->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
 
 
                                         <div class="col-lg-6 mt-2">
@@ -84,8 +102,9 @@
                                             <label class="form-label">API Secret</label>
                                             <input type="text"  value="{{$partner->api_secret}}" class="form-control mt-2" name="api_secret" placeholder="API Secret">
                                         </div>
+
                                         </div>
-                                        <div class="row">
+                                        <div class="row mt-2">
                                             <div class="col-6"></div>
                                             <div class="col-6">
 
@@ -109,12 +128,64 @@
                 </div>
                 <div class="row">
 
-                    <h1 class="page-title">
-                        Partner Settings
-                    </h1>
                     <div class="col-sm-12" >
 
                         <div class="card bg-white border-0 mt-3 mb-3 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="card-title">Auto-Push Settings</h4>
+                            </div>
+                            <div class="card-body bg-white border-light">
+
+                                <form method="post" action="{{route('partner.auto_push.setting.save')}}">
+                                    @csrf
+                                <div class="card">
+
+                                    <div class="card-body">
+                                        <div class="row">
+
+                                            <input type="hidden" name="partner_id" value="{{$partner->id}}">
+
+                                            <div class="col-6">
+                                                <label class="form-check form-switch " >
+                                                    <input class="form-check-input ml-3 " data-id="{{$partner->id}}" @if($partner->autopush_products==1) checked @endif value="1" type="checkbox" name="autopush_products">
+                                                    <strong>Auto-Push Products</strong>
+                                                </label>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-check form-switch ">
+                                                    <input class="form-check-input ml-3 " data-id="{{$partner->id}}" @if($partner->autopush_orders==1) checked @endif value="1" type="checkbox" name="autopush_orders">
+                                                    <strong>Auto-Push Orders</strong>
+                                                </label>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-6"></div>
+                                            <div class="col-6">
+                                            <button style="float: right"  type="submit" class="btn btn-primary ms-auto" >
+                                                Save
+                                            </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm-12" >
+
+                        <div class="card bg-white border-0 mt-3 mb-3 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="card-title">Multiplier Settings</h4>
+                            </div>
                             <div class="card-body bg-white border-light">
 
                                 <form method="post" action="{{route('partner.multiplier.setting.save')}}">
@@ -172,6 +243,43 @@
     <script>
 
         $(document).ready(function(){
+            $('.status_change').change(function (){
+
+
+                var id= $(this).data('id');
+
+                if($(this).is(':checked')){
+
+                    var status=1;
+                }
+                else{
+                    var status=0;
+                }
+
+                $.ajax({
+                    type:'get',
+                    url:'{{URL::to('partner-status-change')}}',
+                    data:{'status':status,'id':id},
+
+                    success:function(data){
+                        var op=' ';
+                        if(data.status==1){
+                            toastr.success("Partner Active Successfully!!");
+                        }
+                        else{
+                            toastr.success("Partner Disable Successfully!!");
+
+                        }
+
+                    },
+                    error: function (request, status, error) {
+
+
+                    }
+
+
+                });
+            });
 
             setTimeout(function() { $(".alert-success").hide(); }, 2000);
             setTimeout(function() { $(".error-alert").hide(); }, 2000);

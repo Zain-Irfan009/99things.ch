@@ -27,6 +27,9 @@ class CreatePartnersTable extends Migration
             $table->double('price_multiplier')->nullable();
             $table->double('compare_at_price_multiplier')->nullable();
             $table->string('platform')->nullable();
+            $table->bigInteger('store_language_id')->nullable();
+            $table->bigInteger('autopush_products')->default(0);
+            $table->bigInteger('autopush_orders')->default(0);
             $table->timestamps();
         });
     }

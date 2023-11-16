@@ -11,6 +11,12 @@
         right: 0 !important;
         left:unset !important;
     }
+    .table-vcenter{
+        font-size: 14px !important;
+    }
+    .table-responsive{
+        min-height: 320px;
+    }
 </style>
 @section('content')
 
@@ -47,10 +53,10 @@
 
 
             </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-floating ">
                         <select class="form-select" aria-label="Default select example" onchange='filterByPartner(this.value)'>
-                            <option value='' selected="">Vendor</option>
+                            <option value='' selected="">partner</option>
                             @foreach($partners as $partner)
                                 <option value="{{$partner->id}}" {{Request::get('partner') == $partner->id  ? 'selected' : ''}}>{{$partner->name}}</option>
                             @endforeach
@@ -59,7 +65,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-floating ">
                         <select class="form-select" aria-label="Default select example" onchange='filterByStatus(this.value)'>
                             <option value=''  selected="">App Status</option>
@@ -73,7 +79,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-floating ">
                         <select class="form-select" aria-label="Default select example" onchange='filterByShopifyStatus(this.value)'>
                             <option value=''  selected="">Shopify Status</option>
@@ -86,7 +92,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="label-area sort-area">
                         <div class="mb-3">
 
@@ -98,7 +104,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 mt-3 selected_btn" style="text-align: right;display: none">
+                <div class="col-md-12 mt-3 selected_btn" style="text-align: right;display: none">
                     <button data-action="approve" class="btn btn-success submit_btn btn-sm">Approve Selected</button>
                     <button data-action="deny" class="btn btn-danger btn-sm submit_btn">Deny Selected</button>
                 </div>
@@ -143,9 +149,9 @@
 
                                                 <a href="{{url('product-view')}}/{{$product->id}}">
                                                     @if($product->featured_image)
-                                                    <img src="{{$product->featured_image}}" width="100%" alt="">
+                                                    <img src="{{$product->featured_image}}" width="75px" alt="">
                                                         @else
-                                                        <img src="{{asset('empty.jpg')}}" width="100%" alt="">
+                                                        <img src="{{asset('empty.jpg')}}" width="75px" alt="">
                                                     @endif
                                                 </a>
 
@@ -165,12 +171,12 @@
                                                         </button>
                                                         <div class="dropdown-menu dropdown-menu-end">
                                                             @if($product->app_status!=1)
-                                                            <a class="dropdown-item" href="{{url('shopify-create')}}/{{$product->id}}">Approve</a>
+                                                            <a class="dropdown-item" href="{{url('shopify-create')}}/{{$product->id}}">Approve Product</a>
                                                                 @endif
                                                             @if($product->app_status==1)
-                                                            <a class="dropdown-item delete_btn" data-confirm="Are you sure you want to delete this Partner?" href="{{url('reject-product')}}/{{$product->id}}">Deny</a>
+                                                            <a class="dropdown-item delete_btn" data-confirm="Are you sure you want to delete this Partner?" href="{{url('reject-product')}}/{{$product->id}}">Deny Product</a>
                                                                 @endif
-                                                            <a class="dropdown-item "  href="{{url('product-view')}}/{{$product->id}}">View</a>
+                                                            <a class="dropdown-item "  href="{{url('product-view')}}/{{$product->id}}">View Product</a>
                                                         </div>
                                                     </div>
                                                 </div>

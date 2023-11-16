@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Log;
 use App\Models\Partner;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class DashboardController extends Controller
 {
     public function Dashboard(){
-
-        $shop=Auth::user();
+      $shop=Auth::user();
         $partners=Partner::count();
         $products=Product::count();
         $pending_products=Product::where('app_status',0)->count();
@@ -23,5 +24,10 @@ class DashboardController extends Controller
         $shopify_in_progress_products=Product::where('shopify_status','In-Progress')->count();
         $shopify_failed_products=Product::where('shopify_status','Failed')->count();
         return view('admin.dashboard',compact('partners','products','pending_products','approved_products','deny_products','shopify_pending_products','shopify_complete_products','shopify_in_progress_products','shopify_failed_products'));
+    }
+
+    public function Logs(){
+        $logs=Log::orderBy('id','desc')->paginate(20);
+        return view('admin.logs.index',compact('logs'));
     }
 }

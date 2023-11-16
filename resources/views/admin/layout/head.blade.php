@@ -5,7 +5,7 @@
     <title>99things.ch</title>
     <!-- CSS files -->
 
-
+    <link rel="icon" type="image/x-icon" href="{{asset('favicon/favicon.png')}}">
 
     <link href="{{asset('dist/css/tabler.min.css')}}" rel="stylesheet"/>
     <link href="{{asset('dist/css/tabler-flags.min.css')}}" rel="stylesheet"/>
@@ -21,6 +21,12 @@
 
     <link rel="stylesheet" href="{{asset('richtexteditor/rte_theme_default.css')}}">
     <script src="{{asset('richtexteditor/rte.js')}}"></script>
+
+
+    <link href="{{asset('wysiwyg.css')}}" rel="stylesheet" />
+    <script src="{{asset('wysiwyg.js')}}"></script>
+
+
     <style>
 
         .LockOn {

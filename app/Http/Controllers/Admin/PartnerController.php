@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Jobs\PartnerProductsSyncJob;
+use App\Models\Log;
 use App\Models\Partner;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Options;
@@ -19,11 +21,22 @@ use Osiset\BasicShopifyAPI\Session;
 class PartnerController extends BaseController
 {
 
-    public function PartnerView(){
+    public function PartnerView(Request $request){
 
-        $partners=Partner::paginate(20);
+        $partners=Partner::query();
+        if ($request->search != "") {
+           $partners->where('name', 'like', '%' . $request->search . '%')->orWhere('shop_name', 'like', '%' . $request->search . '%');
+        }
+        if($request->platform != ""){
+            $partners->where('platform' , $request->platform);
+        }
+        if($request->status!=""){
+            $partners->where('status' , $request->status);
+        }
 
-        return view('admin.partners.index',compact('partners'));
+        $partners=$partners->orderBy('id','desc')->paginate(20)->appends($request->all());
+    $languages= DB::table('languages')->get();
+        return view('admin.partners.index',compact('partners','languages'));
     }
 
 
@@ -47,6 +60,7 @@ class PartnerController extends BaseController
             $partner->api_key = $request->api_key;
             $partner->api_secret = $request->api_secret;
             $partner->platform = $request->platform;
+            $partner->store_language_id = $request->store_language;
             $partner->user_id = $user->id;
             $partner->save();
 
@@ -188,8 +202,8 @@ dd($response);
 
         $partner=Partner::find($id);
         if($partner){
-
-            return view('admin.partners.partner-detail',compact('partner'));
+            $languages= DB::table('languages')->get();
+            return view('admin.partners.partner-detail',compact('partner','languages'));
         }
     }
 
@@ -209,9 +223,11 @@ dd($response);
 
         $partner=Partner::find($request->partner_id);
         if($partner){
+            $partner->name=$request->name;
             $partner->shopify_token=$request->shopify_token;
             $partner->api_key=$request->api_key;
             $partner->api_secret=$request->api_key;
+            $partner->store_language_id=$request->store_language;
             $partner->save();
             return back()->with('success', 'Partner Setting Saved Successfully');
         }
@@ -228,25 +244,62 @@ dd($response);
     }
 
     public function SyncPartnerProducts($id,$next = null){
-        $partner=Partner::find($id);
 
-        $products = $this->api($partner)->rest('get', '/admin/products.json', [
-            'limit' => 250,
-        ]);
-        $products = json_decode(json_encode($products));
+        $partner = Partner::find($id);
 
-        foreach ($products->body->products as $index => $product) {
+        $log = new Log();
+        $currentTime = now();
+        $log->name = 'Sync Products (' . $partner->name . ')';
+        $log->date = $currentTime->format('F j, Y');
+        $log->start_time = $currentTime->toTimeString();
+        $log->status = 'Pending';
+        $log->save();
 
-            $productController=new ProductController();
-            $productController->createShopifySupplierProducts($product, $id);
+        try {
+            $currentTime = now();
+            $log->end_time = $currentTime->toTimeString();
+            $log->status = 'In-Progress';
+            $log->save();
+            $products = $this->api($partner)->rest('get', '/admin/products.json', [
+                'limit' => 250,
+            ]);
+            $products = json_decode(json_encode($products));
+
+            foreach ($products->body->products as $index => $product) {
+
+                $productController = new ProductController();
+                $productController->createShopifySupplierProducts($product, $id);
+            }
+            if (isset($products->link->next)) {
+                $this->SyncPartnerProducts($id, $products->link->next);
+            }
+
+            $currentTime = now();
+            $log->date = $currentTime->format('F j, Y');
+            $log->end_time = $currentTime->toTimeString();
+            $log->status = 'Complete';
+            $log->save();
+            return back()->with('success', 'Partner Products Sync Successfully');
+        }catch (\Exception $exception){
+
+            $currentTime = now();
+            $log->end_time = $currentTime->toTimeString();
+            $log->status = 'Failed';
+            $log->save();
+
         }
-        if (isset($products->link->next)) {
-            $this->SyncPartnerProducts($id,$products->link->next);
-        }
-        return back()->with('success', 'Partner Products Sync Successfully');
     }
 
 
+    public function PartnerAutoPushSettingSave(Request $request){
+        $partner=Partner::find($request->partner_id);
+        if($partner) {
+            $partner->autopush_products = isset($request->autopush_products) ? $request->autopush_products : 0;
+            $partner->autopush_orders = isset($request->autopush_orders) ? $request->autopush_orders : 0;
+            $partner->save();
+            return back()->with('success', 'Partner Auto-Push Settings Save Successfully');
+        }
+    }
 
 
 

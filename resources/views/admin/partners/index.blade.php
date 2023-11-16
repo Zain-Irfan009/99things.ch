@@ -7,6 +7,13 @@
     .font-weight-medium{
         color: black;
     }
+    .input-icon-addon{
+        right: 0 !important;
+        left:unset !important;
+    }
+    .table-responsive{
+        min-height: 320px;
+    }
 </style>
 @section('content')
 
@@ -19,112 +26,143 @@
                     Partners
                 </h1>
             </div>
-        </div>
-            <div class="row mt-2">
-            <div class="col-md-12" >
 
-                <div class="form-group">
+            <div class="col-md-6" >
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modal-export" style="float: right;font-size: 12px;" type="button" class="btn sync-button btn-primary ml-1">Add Partner</a>
 
-                    <form action="{{route('partner.filter')}}" method="post">
+
+
+                <div class="modal modal-blur fade" id="modal-export" tabindex="-1" data-focus="false"   role="dialog" aria-hidden="true">
+                    <form method="post" action="{{route('save.partner')}}">
                         @csrf
+                        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <input type="hidden" value="" name="campaign_id">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Add Partner</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
 
-                        <div class="input-group">
+                                <input type="hidden" class="timezone" name="timezone">
+                                <div class="modal-body">
+                                    <div class="row">
 
-                            <select class="form-control mx-2 " name="platform">
-                                <option value="">Select Platform</option>
-                                <option @if(isset($request) && $request->input('platform')=='Shopify') selected @endif value="Shopify">Shopify</option>
-                                <option @if(isset($request) && $request->input('platform')=='Magento') selected @endif value="Magento">Magento</option>
-                                <option @if(isset($request) && $request->input('platform')=='Woocommerce') selected @endif value="Woocommerce">Woocommerce</option>
+                                        <div class="col-lg-12 mt-2">
+                                            <label class="form-label">Name</label>
+                                            <input type="text" required class="form-control mt-2" name="name" placeholder="Partner Name">
+                                        </div>
+
+                                        <div class="col-lg-12 mt-2">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" required class="form-control mt-2" name="email" placeholder="Partner Email">
+                                        </div>
+
+                                        <div class="col-lg-12 mt-2">
+                                            <label class="form-label">Platform</label>
+                                            <select class="form-control " required name="platform">
+                                                <option value="">Select Platform</option>
+                                                <option  value="Shopify">Shopify</option>
+                                                <option value="Magento">Magento</option>
+                                                <option value="Woocommerce">Woocommerce</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-12 mt-2">
+                                            <label class="form-label">Store Name</label>
+                                            <input type="text" required class="form-control mt-2" name="shop_name" placeholder="abc.myshopify.com">
+                                        </div>
+
+                                        <div class="col-lg-12 mt-2">
+                                            <label class="form-label">Store Language</label>
+                                            <select class="form-control " required name="store_language">
+                                                <option value="">Select Store Language</option>
+                                                @foreach($languages as $language)
+                                                <option  value="{{$language->id}}">{{$language->name}}</option>
+                                                    @endforeach
+                                            </select>
+                                        </div>
+
+
+                                        <div class="col-lg-12 mt-2">
+                                            <label class="form-label">Token</label>
+                                            <input type="text" required class="form-control mt-2" name="shopify_token" placeholder="Token">
+                                        </div>
+
+
+                                        <div class="col-lg-12 mt-2">
+                                            <label class="form-label">API Key</label>
+                                            <input type="text" required class="form-control mt-2" name="api_key" placeholder="API Key">
+                                        </div>
+                                        <div class="col-lg-12 mt-2">
+                                            <label class="form-label">API Secret</label>
+                                            <input type="text" required class="form-control mt-2" name="api_secret" placeholder="API Secret">
+                                        </div>
+
+
+
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer mt-1">
+                                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                                        Cancel
+                                    </a>
+                                    <button  type="submit" class="btn btn-primary ms-auto" >
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+            <div class="row mt-2">
+            <div class="col-md-4" >
+                <div class="form-floating ">
+                            <select class="form-control " name="platform" onchange='filterByPlatform(this.value)'>
+                                <option value="">Platform</option>
+                                <option {{ Request::get('platform') == "Shopify" ? 'selected' : '' }} value="Shopify">Shopify</option>
+                                <option {{ Request::get('platform') == "Magento" ? 'selected' : '' }} value="Magento">Magento</option>
+                                <option {{ Request::get('platform') == "Woocommerce" ? 'selected' : '' }} value="Woocommerce">Woocommerce</option>
                             </select>
+                    <label for="floating-input">Select</label>
+                </div>
 
-                            <input placeholder="Enter Partner Name" type="text" @if (isset($request)) value="{{$request->partner_filter}}" @endif name="partner_filter" id="question_email" autocomplete="off" class="form-control">
-                            @if(isset($request->partner_filter))
-                                <a href="{{ route('partner')}}" type="button" class="btn btn-secondary clear_filter_data mr-1 pl-4 pr-4">Clear</a>
-                            @endif
-                            <button type="submit" class="btn btn-primary mr-1 pl-4 mx-2 pr-4">Filter</button>
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal-export" type="button" class="btn sync-button btn-primary ml-1">Add Partner</a>
+</div>
+                <div class="col-md-4" >
+                    <form>
+                        <div class="form-floating mb-3">
+                            <input type="text" value="{{Request::get('search')}}" id='search' class="form-control" name="search" placeholder="Search Products" >
+                            <span class="input-icon-addon" onclick="filterByPartner()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <circle cx="10" cy="10" r="7" />
+            <line x1="21" y1="21" x2="15" y2="15" />
+        </svg>
+    </span>
+                            <label for="floating-input">Search Partner</label>
                         </div>
                     </form>
 
-                    <div class="modal modal-blur fade" id="modal-export" tabindex="-1" data-focus="false"   role="dialog" aria-hidden="true">
-                        <form method="post" action="{{route('save.partner')}}">
-                            @csrf
-                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <input type="hidden" value="" name="campaign_id">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Add Partner</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
 
-                                    <input type="hidden" class="timezone" name="timezone">
-                                    <div class="modal-body">
-                                        <div class="row">
+                </div>
 
-                                            <div class="col-lg-6">
-                                                <label class="form-label">Name</label>
-                                                <input type="text" required class="form-control mt-2" name="name" placeholder="Partner Name">
-                                            </div>
-
-                                            <div class="col-lg-6">
-                                                <label class="form-label">Email</label>
-                                                <input type="email" required class="form-control mt-2" name="email" placeholder="Partner Email">
-                                            </div>
-
-                                            <div class="col-lg-6 mt-2">
-                                                <label class="form-label">Select Platform</label>
-                                                <select class="form-control " required name="platform">
-                                                    <option value="">Select Platform</option>
-                                                    <option  value="Shopify">Shopify</option>
-                                                    <option value="Magento">Magento</option>
-                                                    <option value="Woocommerce">Woocommerce</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-lg-6 mt-2">
-                                                <label class="form-label">Shop Name</label>
-                                                <input type="text" required class="form-control mt-2" name="shop_name" placeholder="Shop Name">
-                                            </div>
-
-
-                                            <div class="col-lg-6 mt-2">
-                                                <label class="form-label">Token</label>
-                                                <input type="text" required class="form-control mt-2" name="shopify_token" placeholder="Token">
-                                            </div>
-
-
-                                            <div class="col-lg-6 mt-2">
-                                                <label class="form-label">API Key</label>
-                                                <input type="text" required class="form-control mt-2" name="api_key" placeholder="API Key">
-                                            </div>
-                                            <div class="col-lg-6 mt-2">
-                                                <label class="form-label">API Secret</label>
-                                                <input type="text" required class="form-control mt-2" name="api_secret" placeholder="API Secret">
-                                            </div>
-
-
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="modal-footer mt-1">
-                                        <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                                            Cancel
-                                        </a>
-                                        <button  type="submit" class="btn btn-primary ms-auto" >
-                                            Save
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                <div class="col-md-4">
+                    <div class="form-floating ">
+                        <select class="form-control" name="platform" onchange='filterByStatus(this.value)'>
+                            <option value="" {{ is_null(Request::get('status')) ? 'selected' : '' }}>Status</option>
+                            <option value="1" {{ Request::get('status') == 1 ? 'selected' : '' }}>Active</option>
+                            <option value="0" {{ Request::get('status') === '0' ? 'selected' : '' }}>Inactive</option>
+                        </select>
+                        <label for="floating-input">Select</label>
                 </div>
 
             </div>
+
             </div>
-        </div>
-    </div>
+
 
 
 
@@ -141,7 +179,7 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th>Shop Name</th>
+                                    <th>Store Name</th>
                                     <th>Platform</th>
                                     <th>Active</th>
                                     <th class="w-1"></th>
@@ -219,6 +257,32 @@
 
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        function filterByPartner(val)
+        {
+            var search=$('#search').val();
+            var platform='{{Request::get('platform')}}';
+            if(search!='')
+            {
+                window.location.href='partners?search='+search+'&platform='+platform;
+            }
+        }
+
+        function filterByPlatform(val)
+        {
+            var search='{{Request::get('search')}}';
+            window.location.href='partners?search='+search+'&platform='+val;
+        }
+
+        function filterByStatus(val)
+        {
+            var search='{{Request::get('search')}}';
+            var platform='{{Request::get('platform')}}';
+            window.location.href='partners?search='+search+'&platform='+platform+'&status='+val;
+        }
+    </script>
 
     <script>
         $(document).ready(function(){

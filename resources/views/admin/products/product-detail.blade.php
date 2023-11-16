@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css"
       integrity="sha512-xmGTNt20S0t62wHLmQec2DauG9T+owP9e6VU8GigI0anN7OXLip9i7IwEhelasml2osdxX71XcYm6BQunTQeQg=="
       crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
 
 <style>
     .options{
@@ -34,88 +35,39 @@
         transition: color .15s ease-in-out,background-color .15s ease-in-out,
         border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+    .hide{
+        display: none !important;
+    }
 </style>
 @section('content')
 
 
     <div class="row row-cards">
         <div class="col-lg-12 col-md-12">
+
+            <div class="row">
+                <div class="col-6">
+                    <h1 class="page-title">
+                        <div class="custom-left-arrow-div " >
+                            <a style="text-decoration: none; padding:19px; font-size: 25px; color: black;" href="{{route('products')}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+                        </div>
+                        {{$product->title}}
+
+                    </h1>
+                </div>
+                <div class="col-6 mt-2" style="text-align: right">
+                   <p><strong>Created at: </strong>{{ date('M d, Y', strtotime($product->created_at)) }}</p>
+                    @if($product->approve_date)
+                    <p><strong>Pushed in Shopify: </strong>{{ date('M d, Y', strtotime($product->approve_date)) }}</p>
+                        @endif
+                </div>
+
+            </div>
+
             <form method="post" id="form1" action="{{route('update.product.detail')}}">
                 @csrf
             <div class="">
 
-
-                <div class="col-md-12 card card-border-radius pt-3 pb-2">
-                    <div class="">
-                        <div class="col-md-12 d-flex">
-                            <div class="custom-left-arrow-div " >
-                                <a style="text-decoration: none; padding:19px; font-size: 25px; color: black;" href="{{route('products')}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-                            </div>
-                            <div><h2 style="margin-top: 3px;">{{$product->title}}</h2></div>
-
-                        </div>
-
-
-                    </div>
-                </div>
-
-                <div class="row mt-3">
-                    <div class="col-10"></div>
-                    <div class="col-2" style="text-align: right">
-{{--                        <a href="#" data-bs-toggle="modal" data-bs-target="#modal-edit-product" type="button" class="btn btn-primary ">Edit</a>--}}
-                        <button  type="submit" class="btn btn-primary ">Save</button>
-                    </div>
-                    <div class="modal modal-blur fade" id="modal-edit-product" tabindex="-1" data-focus="false"   role="dialog" aria-hidden="true">
-                        <form method="post" action="{{route('update.product.detail')}}">
-                            @csrf
-                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <input type="hidden" value="{{$product->id}}" name="id">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Edit Product</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-
-
-                                    <div class="modal-body">
-                                        <div class="row">
-
-                                            <div class="col-lg-12">
-                                                <label class="form-label">Title</label>
-                                                <input type="text" required value="{{$product->title}}" class="form-control mt-2" name="title" placeholder="Partner Name">
-                                            </div>
-
-                                            <div class="col-lg-12 mt-2">
-                                                <label class="form-label">Description</label>
-                                                <textarea class="form-control" readonly name="description" id="editor2"   rows="10">{{$product->description}}</textarea>
-                                            </div>
-
-                                            <div class="col-lg-12 mt-2">
-                                                <label class="form-label">Tags</label>
-                                                <input type="text" data-role="tagsinput" name="tags" value="{{$product->tags}}" class="form-control">
-                                            </div>
-
-
-
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="modal-footer mt-1">
-                                        <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                                            Cancel
-                                        </a>
-                                        <button  type="submit" class="btn btn-primary ms-auto" >
-                                            Update
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
                 <div class="row">
                     <div class="col-sm-8" style="padding-right: 0">
 
@@ -127,8 +79,8 @@
                                     <input type="text" name="title"  class="form-control" id="formGroupExampleInput" value="{{$product->title}}">
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-form-label" for="description">Description</label>
-                                    <textarea class="form-control"  name="description" id="editor1"   rows="10">{{$product->description}}</textarea>
+                                    <label class="col-form-label" for="editor1">Description</label>
+                                    <textarea class="form-control"  name="description" id="editor1"  rows="10">{{$product->description}}</textarea>
                                 </div>
                             </div>
 
@@ -140,10 +92,18 @@
                                 <strong>Media</strong>
                                 <div class="row">
                                     @foreach($product_images as $product_image)
+
                                         <div class="col-md-3 mt-2">
-                                            <td class="" style="vertical-align: middle;"><a href="#">@if($product_image->image)<img src="{{$product_image->image}}" width="80%" >@else <img src="{{asset('empty.jpg')}}" width="40px" height="40px"> @endif</a></td>
+                                       <a href="{{$product_image->image}}"  data-fancybox="group">
+                                           @if($product_image->image)
+                                               <img src="{{$product_image->image}}" width="80%" >
+                                           @else
+                                               <img src="{{asset('empty.jpg')}}" width="40px" height="40px">
+                                           @endif
+                                       </a>
                                         </div>
                                     @endforeach
+
 
 
                                 </div>
@@ -347,6 +307,9 @@
 
                                 <label class="mt-2">Partner Email</label>
                                 <input type="text" class="form-control mt-1" disabled value="{{$partner->email}}">
+
+                                <label class="mt-2">Partner Store Name</label>
+                                <input type="text" class="form-control mt-1" disabled value="{{$partner->shop_name}}">
                             </div>
                         </div>
                         <div class="card border-light border-0 mt-3  shadow-sm">
@@ -392,22 +355,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput-angular.min.js"
             integrity="sha512-KT0oYlhnDf0XQfjuCS/QIw4sjTHdkefv8rOJY5HHdNEZ6AmOh1DW/ZdSqpipe+2AEXym5D0khNu95Mtmw9VNKg=="
             crossorigin="anonymous"></script>
-    <script>
-        var editor1 = new RichTextEditor("#editor1", { editorResizeMode: "none" });
-    </script>
 
-    <script>
-        var editor2 = new RichTextEditor("#editor2", { editorResizeMode: "none" });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+
+
 
 
     <script>
         $(document).ready(function (){
+            $('#editor1').wysiwyg();
 
            $('#submit_btn').click(function (){
 
              $('#form1').submit();
            });
+
+
+            $('[data-fancybox]').fancybox({
+                // Options will go here
+                buttons : [
+                    'close'
+                ],
+                wheel : false,
+                transitionEffect: "slide",
+                // thumbs          : false,
+                // hash            : false,
+                loop            : true,
+                // keyboard        : true,
+                toolbar         : false,
+                // animationEffect : false,
+                // arrows          : true,
+                clickContent    : false
+            });
         });
     </script>
 @endsection

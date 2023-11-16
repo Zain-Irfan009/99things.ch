@@ -8,6 +8,7 @@ use App\Jobs\ApprovedProductJob;
 use App\Jobs\DenyProductJob;
 use App\Jobs\UpdateApprovedProductJob;
 use App\Models\CustomLog;
+use App\Models\Log;
 use App\Models\Partner;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -17,13 +18,14 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class ProductController extends BaseController
 {
 
 
     public function Products(Request $request){
-
         $products=Product::query();
         $partners=Partner::all();
         if ($request->search != "") {
@@ -68,6 +70,7 @@ class ProductController extends BaseController
         $custom->save();
 
 
+
         $this->createShopifySupplierProducts($product, $partner->id);
 
         return true;
@@ -90,18 +93,63 @@ class ProductController extends BaseController
     public function createShopifySupplierProducts($product, $id)
     {
 
+        $shop=User::where('name',env('SHOP_NAME'))->first();
         $p = Product::where('partner_shopify_id', $product->id)->where('partner_id',$id)->first();
+        $partner=Partner::find($id);
+        if($shop && $shop->language_id){
+            $language=DB::table('languages')->where('id',$shop->language_id)->first();
+            if($language){
+                $shop_language_code=$language->code;
+            }
+        }
+        if($partner && $partner->store_language_id){
+            $p_language=DB::table('languages')->where('id',$partner->store_language_id)->first();
+            if($p_language){
+                $partner_language_code=$p_language->code;
+            }
+        }
+        $tr = new GoogleTranslate($shop_language_code, $partner_language_code);
+        if($partner->store_language_id==$shop->language_id){
+
+            $p_title=$product->title;
+            $p_description=$product->body_html;
+            $p_type=$product->product_type;
+
+        }else{
+            $p_title=$tr->translate($product->title);
+            $p_description=$tr->translate($product->body_html);
+            $p_type=$tr->translate($product->product_type);
+
+        }
         if ($p === null) {
             $p = new Product();
-            $p->title = $product->title;
-            $p->description = $product->body_html;
+            $p->title = $p_title;
+            $p->description =$p_description;
             $p->handle = $product->handle;
             $p->vendor = $product->vendor;
-            $p->type = $product->product_type;
+            $p->type = $p_type;
             $p->tags = $product->tags;
             $p->options = json_encode($product->options);
             $p->status = $product->status;
             $p->published_at = $product->published_at;
+
+            $log=new Log();
+            $currentTime = now();
+            $log->name='Create Product ('.$partner->name.')';
+            $log->date = $currentTime->format('F j, Y');
+            $log->start_time = $currentTime->toTimeString();
+            $log->end_time = $currentTime->toTimeString();
+            $log->status = 'Complete';
+            $log->save();
+        }else{
+            $log=new Log();
+            $currentTime = now();
+            $log->name='Update Product ('.$partner->name.')';
+            $log->date = $currentTime->format('F j, Y');
+            $log->start_time = $currentTime->toTimeString();
+            $log->end_time = $currentTime->toTimeString();
+            $log->status = 'Complete';
+            $log->save();
         }
         if ($product->images) {
             $image = $product->images[0]->src;
