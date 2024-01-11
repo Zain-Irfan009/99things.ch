@@ -150,6 +150,7 @@
                                         <th>Preview</th>
                                         <th style="width: 14%;">Title</th>
                                         <th style="width: 20%;">SKU</th>
+                                        <th style="width: 20%;">Stock</th>
                                         <th>Weight(Kg)</th>
                                         <th style="width: 14%;">Orignal Price</th>
                                         <th style="width: 14%;">New Price</th>
@@ -172,6 +173,9 @@
 
                                         <td>
                                             <input type="text" disabled class="form-control" value="{{$product_variant->sku}}">
+                                        </td>
+                                        <td>
+                                            <input type="text" disabled class="form-control" value="@if($product_variant->inventory_management=='shopify'){{$product_variant->stock}}@else{{'Inventory Not tracked'}}@endif">
                                         </td>
                                         <td>
                                             <input type="text" disabled class="form-control" value="{{$product_variant->weight}}">

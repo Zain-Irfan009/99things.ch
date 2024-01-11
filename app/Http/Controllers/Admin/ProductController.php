@@ -116,9 +116,18 @@ class ProductController extends BaseController
             $p_type=$product->product_type;
 
         }else{
+            $p_title=null;
+            $p_description=null;
+            $p_type=null;
+            if($product->title){
             $p_title=$tr->translate($product->title);
-            $p_description=$tr->translate($product->body_html);
-            $p_type=$tr->translate($product->product_type);
+            }
+            if($product->body_html) {
+                $p_description = $tr->translate($product->body_html);
+            }
+            if($product->product_type) {
+                $p_type = $tr->translate($product->product_type);
+            }
 
         }
         if ($p === null) {
@@ -314,7 +323,7 @@ class ProductController extends BaseController
                 Product::where('id', $product->id)->update(['shopify_id' => $shopify_product_id, 'app_status' => '1', 'approve_date' => Carbon::now()]);
 
                 foreach ($result->body->product->variants as $prd) {
-                    ProductVariant::where('sku', $prd->sku)->update(['inventory_item_id' => $prd->inventory_item_id, 'shopify_id' => $prd->id, 'shopify_product_id' => $shopify_product_id]);
+                    ProductVariant::where('partner_shopify_product_id',$product->partner_shopify_id)->where('sku', $prd->sku)->update(['inventory_item_id' => $prd->inventory_item_id, 'shopify_id' => $prd->id, 'shopify_product_id' => $shopify_product_id]);
                 }
 
                 $this->shopifyUploadImage($shopify_product_id, $product->partner_shopify_id, $variant_image_ids_array);

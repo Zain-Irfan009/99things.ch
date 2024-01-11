@@ -40,16 +40,20 @@ Route::group(['middleware' => ['auth.shopify']], function () {
     Route::get('shopify-create/{id}',[\App\Http\Controllers\Admin\ProductController::class,'CreateProductShopify']);
     Route::get('reject-product/{id}',[\App\Http\Controllers\Admin\ProductController::class,'RejectProduct']);
     Route::post('update-selected-products', [App\Http\Controllers\Admin\ProductController::class, 'UpdateSelectedProducts'])->name('update.selected.products');
-
     Route::get('approve-all',[\App\Http\Controllers\Admin\ProductController::class,'ApproveAll'])->name('approve.all');
     Route::get('deny-all',[\App\Http\Controllers\Admin\ProductController::class,'DenyAll'])->name('deny.all');
-
-
-
-
     Route::post('update-variant-detail',[\App\Http\Controllers\Admin\ProductController::class,'UpdateVariantDetail'])->name('update.variant.detail');
-
     Route::post('update-product-detail',[\App\Http\Controllers\Admin\ProductController::class,'UpdateProductDetail'])->name('update.product.detail');
+
+
+
+    //orders
+    Route::get('orders', [App\Http\Controllers\Admin\OrderController::class, 'Orders'])->name('orders');
+    Route::get('order-view/{id}', [App\Http\Controllers\Admin\OrderController::class, 'OrderView'])->name('order.view');
+    Route::post('push-selected-lineitems',[\App\Http\Controllers\Admin\OrderController::class,'PushSelectedLineitems'])->name('push.selected.lineitems');
+    Route::get('push-all-lineitems/{id}', [App\Http\Controllers\Admin\OrderController::class, 'PushAllLineitems'])->name('push.all.lineitems');
+    Route::get('push-all-orders', [App\Http\Controllers\Admin\OrderController::class, 'PushAllOrders'])->name('push.all.orders');
+    Route::post('push-selected-orders',[\App\Http\Controllers\Admin\OrderController::class,'PushSelectedOrders'])->name('push.selected.orders');
 
 
         //Logs
@@ -81,7 +85,8 @@ $shop=\App\Models\User::where('name','zain-store-tlx.myshopify.com')->first();
 
     $response = $shop->api()->rest('GET', '/admin/webhooks.json');
 dd($response);
-//    $response = $shop->api()->rest('delete', '/admin/api/webhooks/1091204317284.json');
+//    $response = $shop->api()->rest('delete', '/admin/api/webhooks/1197304774847.json');
+//    dd($response);
     $orders = $shop->api()->rest('POST', '/admin/webhooks.json', [
 
         "webhook" => array(

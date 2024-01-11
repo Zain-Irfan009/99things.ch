@@ -170,7 +170,7 @@ return [
     |
     */
 
-    'api_scopes' => env('SHOPIFY_API_SCOPES', 'read_products,write_products,read_orders,write_orders,read_customers,write_customers'),
+    'api_scopes' => env('SHOPIFY_API_SCOPES', 'read_products,write_products,read_orders,write_orders'),
 
     /*
     |--------------------------------------------------------------------------
@@ -309,11 +309,11 @@ return [
 
         [
             'topic' => 'orders/create',
-            'address' => env('APP_URL').'/webhook/orders-create'
+            'address' => env('APP_URL').'/webhook/order-create'
         ],
         [
             'topic' => 'orders/updated',
-            'address' => env('APP_URL').'/webhook/orders-update'
+            'address' => env('APP_URL').'/webhook/order-update'
         ],
 
         [
@@ -321,33 +321,7 @@ return [
             'address' => env('APP_URL').'/webhook/order-delete'
         ],
 
-        [
-            'topic' => 'customers/create',
-            'address' => env('APP_URL').'/webhook/customers-create'
-        ],
 
-        [
-            'topic' => 'customers/update',
-            'address' => env('APP_URL').'/webhook/customers-update'
-        ],
-
-        [
-            'topic' => 'customers/delete',
-            'address' => env('APP_URL').'/webhook/customers-delete'
-        ],
-        [
-            'topic' => 'products/create',
-            'address' => env('APP_URL').'/webhook/products-create'
-        ],
-
-        [
-            'topic' => 'products/update',
-            'address' => env('APP_URL').'/webhook/products-update'
-        ],
-        [
-            'topic' => 'products/delete',
-            'address' => env('APP_URL').'/webhook/products-delete'
-        ],
         /*
             [
                 'topic' => env('SHOPIFY_WEBHOOK_1_TOPIC', 'orders/create'),

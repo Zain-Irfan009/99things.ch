@@ -145,7 +145,7 @@ class ApprovedProductJob implements ShouldQueue
                             Product::where('id', $product->id)->update(['shopify_id' => $shopify_product_id, 'app_status' => '1', 'approve_date' => Carbon::now()]);
 
                             foreach ($result->body->product->variants as $prd) {
-                                ProductVariant::where('sku', $prd->sku)->update(['inventory_item_id' => $prd->inventory_item_id, 'shopify_id' => $prd->id, 'shopify_product_id' => $shopify_product_id]);
+                                ProductVariant::where('partner_shopify_product_id',$product->partner_shopify_id)->where('sku', $prd->sku)->update(['inventory_item_id' => $prd->inventory_item_id, 'shopify_id' => $prd->id, 'shopify_product_id' => $shopify_product_id]);
                             }
 
                             $product_images = ProductImage::where('product_id', $product->partner_shopify_id)->get();
