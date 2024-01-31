@@ -96,12 +96,14 @@ class ProductController extends BaseController
         $shop=User::where('name',env('SHOP_NAME'))->first();
         $p = Product::where('partner_shopify_id', $product->id)->where('partner_id',$id)->first();
         $partner=Partner::find($id);
+        $shop_language_code=1;
         if($shop && $shop->language_id){
             $language=DB::table('languages')->where('id',$shop->language_id)->first();
             if($language){
                 $shop_language_code=$language->code;
             }
         }
+        $partner_language_code=1;
         if($partner && $partner->store_language_id){
             $p_language=DB::table('languages')->where('id',$partner->store_language_id)->first();
             if($p_language){

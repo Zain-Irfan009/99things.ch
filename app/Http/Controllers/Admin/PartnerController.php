@@ -284,6 +284,7 @@ dd($response);
 
             $currentTime = now();
             $log->end_time = $currentTime->toTimeString();
+            $log->failed_reason = $exception->getMessage();
             $log->status = 'Failed';
             $log->save();
 

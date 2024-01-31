@@ -23,6 +23,7 @@ class CreateLogsTable extends Migration
             $table->bigInteger('products_pushed')->default(0);
             $table->bigInteger('products_left')->default(0);
             $table->longText('status')->nullable();
+            $table->longText('failed_reason')->nullable();
             $table->timestamps();
         });
     }
