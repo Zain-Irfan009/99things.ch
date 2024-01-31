@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -51,6 +52,12 @@ class AfterAuthenticateJob implements ShouldQueue
                 $shop->money_with_currency_format=$result->money_with_currency_format;
                 $shop->language_id=1;
                 $shop->save();
+
+                $setting=new Setting();
+                $setting->base_price_multiplier=1;
+                $setting->base_compare_at_price_multiplier=1;
+                $setting->shop_id=$shop->id;
+                $setting->save();
             }
 
         }
