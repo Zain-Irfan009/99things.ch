@@ -49,6 +49,7 @@ class AfterAuthenticateJob implements ShouldQueue
                 $shop->weight_unit=$result->weight_unit;
                 $shop->money_format=$result->money_format;
                 $shop->money_with_currency_format=$result->money_with_currency_format;
+                $shop->language_id=1;
                 $shop->save();
             }
 
