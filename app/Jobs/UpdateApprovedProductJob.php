@@ -103,7 +103,7 @@ class  UpdateApprovedProductJob implements ShouldQueue
                     "body_html" => $product->description,
                     "variants"     =>$variants,
                     "product_type" => $product->type,
-                    "tags" => explode(",", $product->tags),
+//                    "tags" => explode(",", $product->tags),
 
                 )
             );
@@ -167,7 +167,7 @@ class  UpdateApprovedProductJob implements ShouldQueue
                             "status"=>$product->status,
                             "product_type" => $product->type,
                             "published"    => true ,
-                            "tags"         => explode(",",$product->tags),
+//                            "tags"         => explode(",",$product->tags),
                             "variants"     =>$variants,
                             "options"     =>  json_decode($product->options),
 

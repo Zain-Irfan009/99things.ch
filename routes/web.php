@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth.shopify']], function () {
     //Products
     Route::get('products', [App\Http\Controllers\Admin\ProductController::class, 'Products'])->name('products');
     Route::get('product-view/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'ProductView'])->name('product.view');
+    Route::get('update-product-platform/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'UpdateProductPlatform'])->name('update.product.platform');
     Route::get('shopify-create/{id}',[\App\Http\Controllers\Admin\ProductController::class,'CreateProductShopify']);
     Route::get('reject-product/{id}',[\App\Http\Controllers\Admin\ProductController::class,'RejectProduct']);
     Route::post('update-selected-products', [App\Http\Controllers\Admin\ProductController::class, 'UpdateSelectedProducts'])->name('update.selected.products');
@@ -81,7 +82,7 @@ Route::get('check', [App\Http\Controllers\Admin\PartnerController::class, 'Check
 Route::get('/testing1', function() {
 
     $shop = \Illuminate\Support\Facades\Auth::user();
-$shop=\App\Models\User::where('name','zain-store-tlx.myshopify.com')->first();
+$shop=\App\Models\User::where('name','46d6c5.myshopify.com')->first();
 
     $response = $shop->api()->rest('GET', '/admin/webhooks.json');
 dd($response);

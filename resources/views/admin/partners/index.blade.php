@@ -181,6 +181,8 @@
                                     <th>Email</th>
                                     <th>Store Name</th>
                                     <th>Platform</th>
+                                    <th>Total Products</th>
+                                    <th>Pushed Products</th>
                                     <th>Active</th>
                                     <th class="w-1"></th>
                                 </tr>
@@ -188,11 +190,17 @@
                                 <tbody>
 
                                 @foreach($partners as $partner)
+                                    @php
+                                    $total_products=\App\Models\Product::where('partner_id',$partner->id)->count();
+                                    $pushed_products=\App\Models\Product::where('partner_id',$partner->id)->whereNotNull('shopify_id')->count();
+                                    @endphp
                                 <tr>
                                     <td data-label="Name" >
                                         <div class="d-flex py-1 align-items-center">
                                             <div class="flex-fill">
-                                                <div class="text-muted">{{$partner->name}}</div>
+                                                <a  href="{{ route('view.partner', $partner->id)}}">
+                                                <div class="">{{$partner->name}}</div>
+                                                </a>
                                             </div>
                                         </div>
                                     </td>
@@ -208,6 +216,12 @@
                                         <span class="badge bg-success">{{$partner->platform}}</span>
                                     </td>
 
+                                    <td class="text-muted" data-label="Role" >
+                                        {{$total_products}}
+                                    </td>
+                                    <td class="text-muted" data-label="Role" >
+                                        {{$pushed_products}}
+                                    </td>
                                     <td>
                                         <label class="form-check form-switch mt-1 ">
                                        <input class="form-check-input ml-3 status_change" data-id="{{$partner->id}}" @if($partner->status==1) checked @endif value="1" type="checkbox" name="status">

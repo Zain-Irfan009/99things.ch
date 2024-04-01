@@ -7,7 +7,9 @@
         padding: 4px;
         padding-top: 10px;
     }
-
+    .table-vcenter{
+        font-size: 14px !important;
+    }
 
 </style>
 </head>

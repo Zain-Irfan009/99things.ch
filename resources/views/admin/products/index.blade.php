@@ -11,11 +11,11 @@
         right: 0 !important;
         left:unset !important;
     }
-    .table-vcenter{
-        font-size: 14px !important;
-    }
     .table-responsive{
         min-height: 320px;
+    }
+    .table-vcenter{
+        font-size: 14px;
     }
 </style>
 @section('content')
@@ -158,7 +158,7 @@
                                             </td>
 {{--                                            <td class="" style="vertical-align: middle;"><a href="#">@if($product->featured_image != null)<img src="{{$product->featured_image}}" width="40px" height="40px">@else <img src="{{asset('empty.jpg')}}" width="40px" height="40px"> @endif</a></td>--}}
                                             <td class="alignment"><a href="{{url('product-view')}}/{{$product->id}}">{{ substr($product->title, 0, 30) }}</a></td>
-                                            <td>{{ date('M d, Y', strtotime($product->created_at)) }}</td>
+                                            <td>{{ date('M d, Y', strtotime($product->updated_at)) }}</td>
                                             <td>@if($product->has_partner){{$product->has_partner->name}}@endif</td>
 
                                             <td>@if($product->app_status==1) <span class="badge bg-success">Approved</span> @elseif($product->app_status=='2') <span class="badge bg-warning">Changes Done</span> @elseif($product->app_status=='3') <span class="badge bg-danger">Deny</span> @else <span class="badge bg-primary">Pending </span>@endif</td>
@@ -176,6 +176,7 @@
                                                             @if($product->app_status==1)
                                                             <a class="dropdown-item delete_btn" data-confirm="Are you sure you want to delete this Partner?" href="{{url('reject-product')}}/{{$product->id}}">Deny Product</a>
                                                                 @endif
+                                                            <a class="dropdown-item "  href="{{url('update-product-platform')}}/{{$product->id}}">Update Product</a>
                                                             <a class="dropdown-item "  href="{{url('product-view')}}/{{$product->id}}">View Product</a>
                                                         </div>
                                                     </div>

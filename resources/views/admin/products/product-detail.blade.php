@@ -68,8 +68,9 @@
                 @csrf
             <div class="">
 
+                <input type="hidden" name="id" value="{{$product->id}}">
                 <div class="row">
-                    <div class="col-sm-8" style="padding-right: 0">
+                    <div class="col-sm-8" >
 
                         <div class="card bg-white border-0 mt-3 mb-3 shadow-sm">
                             <div class="card-body bg-white border-light">
@@ -112,192 +113,6 @@
                         </div>
                             @endif
 
-
-                        <div class="card bg-white border-0 mt-3 mb-3 shadow-sm">
-                            <div class="card-body bg-white border-light">
-                                <strong>Variants</strong>
-                                <hr>
-                                @foreach($product_options as $option)
-                                    <div class="row">
-
-                                        <div class="col-md-8">
-                                            <h4 class="ml-4"><strong>{{$option->name}}</strong></h4>
-                                            @foreach($option->values as $value)
-                                                <span class="badge bg-cyan-lt options ">{{$value}}</span>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                    <hr>
-                                @endforeach
-
-
-
-
-                            </div>
-
-                        </div>
-                        <div class="card bg-white border-0 mt-3 mb-3 shadow-sm">
-                            <div class="card-header">
-                              <strong>Variants</strong>
-                            </div>
-                            <div class="card-body bg-white border-light">
-
-
-                                <table
-                                    class="table table-vcenter table-mobile-md card-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Preview</th>
-                                        <th style="width: 14%;">Title</th>
-                                        <th style="width: 20%;">SKU</th>
-                                        <th style="width: 20%;">Stock</th>
-                                        <th>Weight(Kg)</th>
-                                        <th style="width: 14%;">Orignal Price</th>
-                                        <th style="width: 14%;">New Price</th>
-                                        <th style="width: 14%;">Origanal Compare At Price</th>
-                                        <th style="width: 14%;">New Compare At Price</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($product_variants as $product_variant)
-                                    <tr>
-                                        <td>
-                                            @if($product_variant->image)
-                                                <img src="{{$product_variant->image}}" width="40px" height="40px" >
-                                            @else <img src="{{asset('empty.jpg')}}" width="40px" height="40px">
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <input type="text" disabled class="form-control" value="{{$product_variant->title}}">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" disabled class="form-control" value="{{$product_variant->sku}}">
-                                        </td>
-                                        <td>
-                                            <input type="text" disabled class="form-control" value="@if($product_variant->inventory_management=='shopify'){{$product_variant->stock}}@else{{'Inventory Not tracked'}}@endif">
-                                        </td>
-                                        <td>
-                                            <input type="text" disabled class="form-control" value="{{$product_variant->weight}}">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" disabled class="form-control" value="{{number_format($product_variant->price,2)}}">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" disabled class="form-control" value="{{number_format($product_variant->price*$price_multiplier,2)}}">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" disabled class="form-control" value="{{number_format($product_variant->compare_at_price,2)}}">
-                                        </td>
-                                        <td>
-                                            <input type="text" disabled class="form-control" value="{{number_format($product_variant->compare_at_price*$compare_at_price_multiplier,2)}}">
-                                        </td>
-
-                                    </tr>
-                                    @endforeach
-
-                                    </tbody>
-                                </table>
-
-
-{{--                                @foreach($product_variants as $product_variant)--}}
-{{--                                    <div class="row">--}}
-
-{{--                                        <div class="col-md-12">--}}
-
-{{--                                            <div class="row">--}}
-{{--                                                <div class="col-10"></div>--}}
-{{--                                                <div col-2 style="text-align: right">--}}
-
-{{--                                                    <a  href="#" data-bs-toggle="modal" data-bs-target="#modal-edit_{{$product_variant->id}}" type="button" class="btn btn-primary btn-sm">Edit</a>--}}
-{{--                                                </div>--}}
-
-{{--                                                <div class="modal modal-blur fade" id="modal-edit_{{$product_variant->id}}" tabindex="-1" data-focus="false"   role="dialog" aria-hidden="true">--}}
-{{--                                                    <form method="post" action="{{route('update.variant.detail')}}">--}}
-{{--                                                        @csrf--}}
-{{--                                                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">--}}
-{{--                                                            <div class="modal-content">--}}
-{{--                                                                <input type="hidden" value="{{$product_variant->id}}" name="variant_id">--}}
-{{--                                                                <div class="modal-header">--}}
-{{--                                                                    <h5 class="modal-title">Edit Detail</h5>--}}
-{{--                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>--}}
-{{--                                                                </div>--}}
-
-
-{{--                                                                <div class="modal-body">--}}
-{{--                                                                    <div class="row">--}}
-
-{{--                                                                        <div class="col-lg-6">--}}
-{{--                                                                            <label class="form-label">Variant Title</label>--}}
-{{--                                                                            <input type="text" required class="form-control mt-2" value="{{$product_variant->title}}" name="title" placeholder="Variant Title">--}}
-{{--                                                                        </div>--}}
-
-{{--                                                                        <div class="col-lg-6">--}}
-{{--                                                                            <label class="form-label">Price</label>--}}
-{{--                                                                            <input type="number" step="0.01" required class="form-control mt-2" value="{{$product_variant->price}}" name="price" placeholder="Price">--}}
-{{--                                                                        </div>--}}
-
-{{--                                                                    </div>--}}
-
-{{--                                                                </div>--}}
-
-{{--                                                                <div class="modal-footer mt-1">--}}
-{{--                                                                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">--}}
-{{--                                                                        Cancel--}}
-{{--                                                                    </a>--}}
-{{--                                                                    <button  type="submit" class="btn btn-primary ms-auto" >--}}
-{{--                                                                        Update--}}
-{{--                                                                    </button>--}}
-{{--                                                                </div>--}}
-{{--                                                            </div>--}}
-{{--                                                        </div>--}}
-{{--                                                    </form>--}}
-{{--                                                </div>--}}
-{{--                                            </div>--}}
-
-{{--                                            <div class="row mt-3">--}}
-{{--                                                <div class="col-1">--}}
-{{--                                                    @if($product_variant->image)--}}
-{{--                                                        <img src="{{$product_variant->image}}" width="100%" >--}}
-{{--                                                    @else <img src="{{asset('empty.jpg')}}" width="40px" height="40px">--}}
-{{--                                                    @endif--}}
-{{--                                                </div>--}}
-
-{{--                                                <div class="col-4">--}}
-{{--                                                    <strong>{{$product_variant->title}}</strong>--}}
-{{--                                                    <p>{{$product_variant->sku}}</p>--}}
-{{--                                                </div>--}}
-
-{{--                                                <div class="col-3">--}}
-{{--                                                    <p><strong>Weight:</strong> {{$product_variant->weight}}{{$product_variant->weight_unit}}</p>--}}
-{{--                                                    <p><strong>Available:</strong> {{$product_variant->stock}}</p>--}}
-{{--                                                </div>--}}
-
-{{--                                                <div style="text-align: right" class="col-4">--}}
-{{--                                                    <p>{{number_format($product_variant->price,2)}}</p>--}}
-
-{{--                                                </div>--}}
-{{--                                            </div>--}}
-
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                    <hr class="hr_tag">--}}
-{{--                                @endforeach--}}
-
-
-
-
-
-
-                            </div>
-
-                        </div>
-
-
-
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-4">
                         <div class="card border-light border-0 mt-3  shadow-sm">
@@ -330,16 +145,207 @@
                             </div>
                         </div>
 
-                        <div class="mt-1">
-                            <div class="card border-light border-0 mt-3  shadow-sm">
-                                <div class="card-header  text-dark">
-                                    <h3>Tags</h3>
-                                </div>
+{{--                        <div class="mt-1">--}}
+{{--                            <div class="card border-light border-0 mt-3  shadow-sm">--}}
+{{--                                <div class="card-header  text-dark">--}}
+{{--                                    <h3>Tags</h3>--}}
+{{--                                </div>--}}
 
-                                <div class="card-body bg-white">
-                                    <input type="text" data-role="tagsinput" name="tags" value="{{$product->tags}}" class="form-control">
-                                </div>
+{{--                                <div class="card-body bg-white">--}}
+{{--                                    <input type="text" data-role="tagsinput" name="tags" value="{{$product->tags}}" class="form-control">--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-8">
+                        <div class="card bg-white border-0 mt-3 mb-3 shadow-sm">
+                            <div class="card-body bg-white border-light">
+                                <strong>Variants</strong>
+                                <hr>
+                                @foreach($product_options as $option)
+                                    <div class="row">
+
+                                        <div class="col-md-8">
+                                            <h4 class="ml-4"><strong>{{$option->name}}</strong></h4>
+                                            @foreach($option->values as $value)
+                                                <span class="badge bg-cyan-lt options ">{{$value}}</span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    <hr>
+                                @endforeach
+
+
+
+
                             </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card bg-white border-0 mt-3 mb-3 shadow-sm">
+                            <div class="card-header">
+                                <strong>Variants</strong>
+                            </div>
+                            <div class="card-body bg-white border-light">
+
+
+                                <table
+                                    class="table table-vcenter table-mobile-md card-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Preview</th>
+                                        <th style="width: 33%;">Title</th>
+                                        <th style="width: 20%;">SKU</th>
+                                        <th style="width: 15%;">Stock</th>
+                                        <th>Weight(Kg)</th>
+                                        <th style="width: 14%;">Orignal Price</th>
+                                        <th style="width: 12%;">New Price</th>
+                                        <th style="width: 14%;">Origanal Compare At Price</th>
+                                        <th style="width: 14%;">New Compare At Price</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($product_variants as $product_variant)
+                                        <tr>
+                                            <td>
+                                                @if($product_variant->image)
+                                                    <img src="{{$product_variant->image}}" width="40px" height="40px" >
+                                                @else <img src="{{asset('empty.jpg')}}" width="40px" height="40px">
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <input type="text" disabled class="form-control" value="{{$product_variant->title}}">
+                                            </td>
+
+                                            <td>
+                                                <input type="text" disabled class="form-control" value="{{$product_variant->sku}}">
+                                            </td>
+                                            <td>
+                                                <input type="text" disabled class="form-control" value="@if($product_variant->inventory_management=='shopify'){{$product_variant->stock}}@else{{'Inventory Not tracked'}}@endif">
+                                            </td>
+                                            <td>
+                                                <input type="text" disabled class="form-control" value="{{$product_variant->weight}}">
+                                            </td>
+
+                                            <td>
+                                                <input type="text" disabled class="form-control" value="{{number_format($product_variant->price,2)}}">
+                                            </td>
+
+                                            <td>
+                                                <input type="text" disabled class="form-control" value="{{number_format($product_variant->price*$price_multiplier,2)}}">
+                                            </td>
+
+                                            <td>
+                                                <input type="text" disabled class="form-control" value="{{number_format($product_variant->compare_at_price,2)}}">
+                                            </td>
+                                            <td>
+                                                <input type="text" disabled class="form-control" value="{{number_format($product_variant->compare_at_price*$compare_at_price_multiplier,2)}}">
+                                            </td>
+
+                                        </tr>
+                                    @endforeach
+
+                                    </tbody>
+                                </table>
+
+
+                                {{--                                @foreach($product_variants as $product_variant)--}}
+                                {{--                                    <div class="row">--}}
+
+                                {{--                                        <div class="col-md-12">--}}
+
+                                {{--                                            <div class="row">--}}
+                                {{--                                                <div class="col-10"></div>--}}
+                                {{--                                                <div col-2 style="text-align: right">--}}
+
+                                {{--                                                    <a  href="#" data-bs-toggle="modal" data-bs-target="#modal-edit_{{$product_variant->id}}" type="button" class="btn btn-primary btn-sm">Edit</a>--}}
+                                {{--                                                </div>--}}
+
+                                {{--                                                <div class="modal modal-blur fade" id="modal-edit_{{$product_variant->id}}" tabindex="-1" data-focus="false"   role="dialog" aria-hidden="true">--}}
+                                {{--                                                    <form method="post" action="{{route('update.variant.detail')}}">--}}
+                                {{--                                                        @csrf--}}
+                                {{--                                                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">--}}
+                                {{--                                                            <div class="modal-content">--}}
+                                {{--                                                                <input type="hidden" value="{{$product_variant->id}}" name="variant_id">--}}
+                                {{--                                                                <div class="modal-header">--}}
+                                {{--                                                                    <h5 class="modal-title">Edit Detail</h5>--}}
+                                {{--                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>--}}
+                                {{--                                                                </div>--}}
+
+
+                                {{--                                                                <div class="modal-body">--}}
+                                {{--                                                                    <div class="row">--}}
+
+                                {{--                                                                        <div class="col-lg-6">--}}
+                                {{--                                                                            <label class="form-label">Variant Title</label>--}}
+                                {{--                                                                            <input type="text" required class="form-control mt-2" value="{{$product_variant->title}}" name="title" placeholder="Variant Title">--}}
+                                {{--                                                                        </div>--}}
+
+                                {{--                                                                        <div class="col-lg-6">--}}
+                                {{--                                                                            <label class="form-label">Price</label>--}}
+                                {{--                                                                            <input type="number" step="0.01" required class="form-control mt-2" value="{{$product_variant->price}}" name="price" placeholder="Price">--}}
+                                {{--                                                                        </div>--}}
+
+                                {{--                                                                    </div>--}}
+
+                                {{--                                                                </div>--}}
+
+                                {{--                                                                <div class="modal-footer mt-1">--}}
+                                {{--                                                                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">--}}
+                                {{--                                                                        Cancel--}}
+                                {{--                                                                    </a>--}}
+                                {{--                                                                    <button  type="submit" class="btn btn-primary ms-auto" >--}}
+                                {{--                                                                        Update--}}
+                                {{--                                                                    </button>--}}
+                                {{--                                                                </div>--}}
+                                {{--                                                            </div>--}}
+                                {{--                                                        </div>--}}
+                                {{--                                                    </form>--}}
+                                {{--                                                </div>--}}
+                                {{--                                            </div>--}}
+
+                                {{--                                            <div class="row mt-3">--}}
+                                {{--                                                <div class="col-1">--}}
+                                {{--                                                    @if($product_variant->image)--}}
+                                {{--                                                        <img src="{{$product_variant->image}}" width="100%" >--}}
+                                {{--                                                    @else <img src="{{asset('empty.jpg')}}" width="40px" height="40px">--}}
+                                {{--                                                    @endif--}}
+                                {{--                                                </div>--}}
+
+                                {{--                                                <div class="col-4">--}}
+                                {{--                                                    <strong>{{$product_variant->title}}</strong>--}}
+                                {{--                                                    <p>{{$product_variant->sku}}</p>--}}
+                                {{--                                                </div>--}}
+
+                                {{--                                                <div class="col-3">--}}
+                                {{--                                                    <p><strong>Weight:</strong> {{$product_variant->weight}}{{$product_variant->weight_unit}}</p>--}}
+                                {{--                                                    <p><strong>Available:</strong> {{$product_variant->stock}}</p>--}}
+                                {{--                                                </div>--}}
+
+                                {{--                                                <div style="text-align: right" class="col-4">--}}
+                                {{--                                                    <p>{{number_format($product_variant->price,2)}}</p>--}}
+
+                                {{--                                                </div>--}}
+                                {{--                                            </div>--}}
+
+                                {{--                                        </div>--}}
+                                {{--                                    </div>--}}
+                                {{--                                    <hr class="hr_tag">--}}
+                                {{--                                @endforeach--}}
+
+
+
+
+
+
+                            </div>
+
                         </div>
                     </div>
                 </div>

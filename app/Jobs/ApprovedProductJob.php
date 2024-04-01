@@ -127,7 +127,7 @@ class ApprovedProductJob implements ShouldQueue
                                 "status" => $product->status,
                                 "product_type" => $product->type,
                                 "published" => true,
-                                "tags" => explode(",", $product->tags),
+//                                "tags" => explode(",", $product->tags),
                                 "variants" => $variants,
                                 "options" => json_decode($product->options),
 

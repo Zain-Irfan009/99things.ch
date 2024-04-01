@@ -146,7 +146,7 @@ class ProductController extends BaseController
 
             $log=new Log();
             $currentTime = now();
-            $log->name='Create Product ('.$partner->name.')';
+            $log->name='Create Product ('.$partner->name.') ('.$p->title.')';
             $log->date = $currentTime->format('F j, Y');
             $log->start_time = $currentTime->toTimeString();
             $log->end_time = $currentTime->toTimeString();
@@ -155,7 +155,7 @@ class ProductController extends BaseController
         }else{
             $log=new Log();
             $currentTime = now();
-            $log->name='Update Product ('.$partner->name.')';
+            $log->name='Update Product ('.$partner->name.') ('.$p->title.')' ;
             $log->date = $currentTime->format('F j, Y');
             $log->start_time = $currentTime->toTimeString();
             $log->end_time = $currentTime->toTimeString();
@@ -308,7 +308,7 @@ class ProductController extends BaseController
                     "status"=>$product->status,
                     "product_type" => $product->type,
                     "published"    => true ,
-                    "tags"         => explode(",",$product->tags),
+//                    "tags"         => explode(",",$product->tags),
                     "variants"     =>$variants,
                     "options"     =>  json_decode($product->options),
 
@@ -914,7 +914,7 @@ class ProductController extends BaseController
         if($product){
             $product->title=$request->title;
             $product->description=$request->description;
-            $product->tags=$request->tags;
+//            $product->tags=$request->tags;
             $product->type=$request->product_type;
             $product->vendor=$request->vendor;
             $product->is_changed=1;
@@ -928,7 +928,7 @@ class ProductController extends BaseController
                         "body_html" => $product->description,
                         "vendor" => $product->vendor,
                         "product_type" => $product->type,
-                        "tags" => explode(",", $product->tags),
+//                        "tags" => explode(",", $product->tags),
 
                     )
                 );
@@ -1014,6 +1014,47 @@ class ProductController extends BaseController
     }
 
 
+    public function UpdateProductPlatform($id){
+
+        $get_product=Product::find($id);
+        $partner=Partner::find($get_product->partner_id);
+        $log = new Log();
+        $currentTime = now();
+        $log->name = 'Update Product (' . $get_product->title . ')';
+        $log->date = $currentTime->format('F j, Y');
+        $log->start_time = $currentTime->toTimeString();
+        $log->status = 'Pending';
+        $log->save();
+
+        try {
+            $currentTime = now();
+            $log->end_time = $currentTime->toTimeString();
+            $log->status = 'In-Progress';
+            $log->save();
+            $product = $this->api($partner)->rest('get', '/admin/products/'.$get_product->partner_shopify_id.'.json');
+            $product = json_decode(json_encode($product));
+            $product=$product->body->product;
+                $productController = new ProductController();
+                $productController->createShopifySupplierProducts($product, $partner->id);
+
+
+
+            $currentTime = now();
+            $log->date = $currentTime->format('F j, Y');
+            $log->end_time = $currentTime->toTimeString();
+            $log->status = 'Complete';
+            $log->save();
+            return back()->with('success', 'Product Updated Successfully');
+        }catch (\Exception $exception){
+
+            $currentTime = now();
+            $log->end_time = $currentTime->toTimeString();
+            $log->failed_reason = $exception->getMessage();
+            $log->status = 'Failed';
+            $log->save();
+
+        }
+    }
 
 
 

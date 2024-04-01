@@ -11,9 +11,7 @@
         right: 0 !important;
         left:unset !important;
     }
-    .table-vcenter{
-        font-size: 14px !important;
-    }
+
     .table-responsive{
         min-height: 320px;
     }

@@ -16,15 +16,13 @@ class Kernel extends ConsoleKernel
 
 
     protected $commands = [
-        Commands\CampaignCron::class,
+
     ];
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
 
-        $schedule->command('campaign:cron')->everyMinute();
-        $schedule->command('CampaginReminder:cron')->everyMinute();
-        $schedule->command('sync-stripe-detail:cron')->daily();
+
     }
 
     /**
