@@ -112,6 +112,8 @@ class  UpdateApprovedProductJob implements ShouldQueue
             $result = $shop->api()->rest('put', '/admin/products/' . $product->shopify_id . '.json', $products_array);
             $result = json_decode(json_encode($result));
 
+            $product->shopify_updated_at=Carbon::now();
+            $product->save();
             $log=new CustomLog();
             $log->logs=json_encode($result);
             $log->save();
@@ -181,7 +183,7 @@ class  UpdateApprovedProductJob implements ShouldQueue
 
                         $shopify_product_id = $result->body->product->id;
 
-                        Product::where('id', $product->id)->update(['shopify_id' => $shopify_product_id, 'app_status' => '1', 'approve_date' => Carbon::now()]);
+                        Product::where('id', $product->id)->update(['shopify_id' => $shopify_product_id, 'app_status' => '1', 'approve_date' => Carbon::now(),'shopify_updated_at'=>Carbon::now()]);
 
                         foreach ($result->body->product->variants as $prd) {
                             ProductVariant::where('sku', $prd->sku)->update(['inventory_item_id' => $prd->inventory_item_id, 'shopify_id' => $prd->id, 'shopify_product_id' => $shopify_product_id]);

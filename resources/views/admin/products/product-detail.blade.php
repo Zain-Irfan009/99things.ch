@@ -59,6 +59,9 @@
                    <p><strong>Created at: </strong>{{ date('M d, Y', strtotime($product->created_at)) }}</p>
                     @if($product->approve_date)
                     <p><strong>Pushed in Shopify: </strong>{{ date('M d, Y', strtotime($product->approve_date)) }}</p>
+                    @if($product->shopify_updated_at)
+                    <p><strong>Updated in Shopify: </strong>{{ date('M d, Y', strtotime($product->shopify_updated_at)) }}</p>
+                        @endif
                         @endif
                 </div>
 

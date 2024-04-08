@@ -322,7 +322,7 @@ class ProductController extends BaseController
 
                 $shopify_product_id = $result->body->product->id;
 
-                Product::where('id', $product->id)->update(['shopify_id' => $shopify_product_id, 'app_status' => '1', 'approve_date' => Carbon::now()]);
+                Product::where('id', $product->id)->update(['shopify_id' => $shopify_product_id, 'app_status' => '1', 'approve_date' => Carbon::now(),'shopify_updated_at'=>Carbon::now()]);
 
                 foreach ($result->body->product->variants as $prd) {
                     ProductVariant::where('partner_shopify_product_id',$product->partner_shopify_id)->where('sku', $prd->sku)->update(['inventory_item_id' => $prd->inventory_item_id, 'shopify_id' => $prd->id, 'shopify_product_id' => $shopify_product_id]);

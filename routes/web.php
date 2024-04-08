@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,6 +82,9 @@ Route::get('check', [App\Http\Controllers\Admin\PartnerController::class, 'Check
 
 Route::get('/testing1', function() {
 
+    $tr = new GoogleTranslate('en', 'tr');
+    $p_title=$tr->translate('Güle güle');
+    dd($p_title);
     $shop = \Illuminate\Support\Facades\Auth::user();
 $shop=\App\Models\User::where('name','46d6c5.myshopify.com')->first();
 
