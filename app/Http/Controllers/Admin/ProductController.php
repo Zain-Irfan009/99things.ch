@@ -111,16 +111,21 @@ class ProductController extends BaseController
             }
         }
         $tr = new GoogleTranslate($shop_language_code, $partner_language_code);
+        $is_translation=0;
+
         if($partner->store_language_id==$shop->language_id){
 
             $p_title=$product->title;
             $p_description=$product->body_html;
             $p_type=$product->product_type;
+            $options=$product->options;
 
         }else{
             $p_title=null;
             $p_description=null;
             $p_type=null;
+
+
             if($product->title){
             $p_title=$tr->translate($product->title);
             }
@@ -131,7 +136,40 @@ class ProductController extends BaseController
                 $p_type = $tr->translate($product->product_type);
             }
 
+            $options=$product->options;
+            if($partner->translate_options==1) {
+                $is_translation=1;
+                $options = [];
+
+                foreach ($product->options as $option) {
+                    // Translate option name
+                    $translatedName = $tr->translate($option->name);
+
+                    // Translate option values
+                    $translatedValues = [];
+                    foreach ($option->values as $value) {
+                        $translatedValue = $tr->translate($value);
+                        $translatedValues[] = $translatedValue;
+                    }
+
+                    // Create translated option object
+                    $translatedOption = [
+                        'id' => $option->id,
+                        'product_id' => $option->product_id,
+                        'name' => $translatedName,
+                        'position' => $option->position,
+                        'values' => $translatedValues,
+                    ];
+
+                    // Add translated option to the array
+                    $options[] = $translatedOption;
+                }
+            }
+
         }
+
+
+
         if ($p === null) {
             $p = new Product();
             $p->title = $p_title;
@@ -140,7 +178,7 @@ class ProductController extends BaseController
             $p->vendor = $product->vendor;
             $p->type = $p_type;
             $p->tags = $product->tags;
-            $p->options = json_encode($product->options);
+            $p->options = json_encode($options);
             $p->status = $product->status;
             $p->published_at = $product->published_at;
 
@@ -161,6 +199,9 @@ class ProductController extends BaseController
             $log->end_time = $currentTime->toTimeString();
             $log->status = 'Complete';
             $log->save();
+
+            $p->options = json_encode($options);
+            $p->save();
         }
         if ($product->images) {
             $image = $product->images[0]->src;
@@ -175,44 +216,71 @@ class ProductController extends BaseController
 
         if (count($product->variants) >= 1) {
             foreach ($product->variants as $variant) {
-                $v = ProductVariant::where('partner_shopify_id', $variant->id)->where('partner_id',$id)->first();
+
+                $v = ProductVariant::where('partner_shopify_id', $variant->id)->where('partner_id', $id)->first();
                 if ($v === null) {
                     $v = new ProductVariant();
                 }
-                $v->partner_shopify_id = $variant->id;
-                $v->partner_shopify_product_id = $variant->product_id;
-                $v->partner_id = $id;
-                $v->title = $variant->title;
-                $v->option1 = $variant->option1;
-                $v->option2 = $variant->option2;
-                $v->option3 = $variant->option2;
-                $v->sku = $variant->sku;
-                $v->requires_shipping = $variant->requires_shipping;
-                $v->fulfillment_service = $variant->fulfillment_service;
-                $v->taxable = $variant->taxable;
-                if (isset($product->images)){
-                    foreach ($product->images as $image){
-                        if (isset($variant->image_id)){
-                            if ($image->id == $variant->image_id){
-                                $v->image = $image->src;
+                $variant_title=$variant->title;
+                $option1=$variant->option1;
+                $option2=$variant->option2;
+                $option3=$variant->option3;
+
+
+                    if ($is_translation == 1) {
+                        $option1 = null;
+                        $option2 = null;
+                        $option3 = null;
+                        if ($variant->option1) {
+                            $option1 = $tr->translate($variant->option1);
+                        }
+                        if ($variant->option2) {
+                            $option2 = $tr->translate($variant->option2);
+                        }
+                        if ($variant->option3) {
+                            $option3 = $tr->translate($variant->option3);
+                        }
+
+                        $variant_title=$tr->translate($variant->title);
+                    }
+
+
+
+                    $v->partner_shopify_id = $variant->id;
+                    $v->partner_shopify_product_id = $variant->product_id;
+                    $v->partner_id = $id;
+                    $v->title =$variant_title;
+                    $v->option1 = $option1;
+                    $v->option2 = $option2;
+                    $v->option3 = $option3;
+                    $v->sku = $variant->sku;
+                    $v->requires_shipping = $variant->requires_shipping;
+                    $v->fulfillment_service = $variant->fulfillment_service;
+                    $v->taxable = $variant->taxable;
+                    if (isset($product->images)) {
+                        foreach ($product->images as $image) {
+                            if (isset($variant->image_id)) {
+                                if ($image->id == $variant->image_id) {
+                                    $v->image = $image->src;
+                                }
+                            } else {
+                                $v->image = "";
                             }
-                        }else{
-                            $v->image = "";
                         }
                     }
-                }
-                $v->price = $variant->price;
-                $v->compare_at_price = $variant->compare_at_price;
-                $v->weight = $variant->weight;
-                $v->grams = $variant->grams;
-                $v->weight_unit = $variant->weight_unit;
-                $v->partner_inventory_item_id = $variant->inventory_item_id;
-                $v->stock = $variant->inventory_quantity;
-                $v->inventory_management = $variant->inventory_management;
-                $v->inventory_policy = $variant->inventory_policy;
-                $v->barcode = $variant->barcode;
-                $v->image_id = $variant->image_id;
-                $v->save();
+                    $v->price = $variant->price;
+                    $v->compare_at_price = $variant->compare_at_price;
+                    $v->weight = $variant->weight;
+                    $v->grams = $variant->grams;
+                    $v->weight_unit = $variant->weight_unit;
+                    $v->partner_inventory_item_id = $variant->inventory_item_id;
+                    $v->stock = $variant->inventory_quantity;
+                    $v->inventory_management = $variant->inventory_management;
+                    $v->inventory_policy = $variant->inventory_policy;
+                    $v->barcode = $variant->barcode;
+                    $v->image_id = $variant->image_id;
+                    $v->save();
+
             }
         }
 

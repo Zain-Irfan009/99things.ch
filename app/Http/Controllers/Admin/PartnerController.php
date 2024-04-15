@@ -228,6 +228,7 @@ dd($response);
             $partner->api_key=$request->api_key;
             $partner->api_secret=$request->api_key;
             $partner->store_language_id=$request->store_language;
+            $partner->translate_options=$request->translate_options;
             $partner->save();
             return back()->with('success', 'Partner Setting Saved Successfully');
         }

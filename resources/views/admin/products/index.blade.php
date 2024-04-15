@@ -162,7 +162,7 @@
                                             <td>@if($product->has_partner){{$product->has_partner->name}}@endif</td>
 
                                             <td>@if($product->app_status==1) <span class="badge bg-success">Approved</span> @elseif($product->app_status=='2') <span class="badge bg-warning">Changes Done</span> @elseif($product->app_status=='3') <span class="badge bg-danger">Deny</span> @else <span class="badge bg-primary">Pending </span>@endif</td>
-                                            <td>@if($product->shopify_status=='Complete') <span class="badge bg-success">Completed</span> @elseif($product->shopify_status=='Deny') <span class="badge bg-danger">Deny</span> @else <span class="badge bg-primary">Pending </span>@endif</td>
+                                            <td>@if($product->shopify_status=='Complete') <span class="badge bg-success">Completed</span> @elseif($product->shopify_status=='Deny') <span class="badge bg-danger">Deny</span> @elseif($product->shopify_status=='In-Progress') <span class="badge bg-yellow">In-Progress</span> @else <span class="badge bg-primary">Pending </span>@endif</td>
                                             <td>
                                                 <div class="btn-list flex-nowrap">
                                                     <div class="dropdown">

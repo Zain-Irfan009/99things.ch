@@ -104,7 +104,20 @@
                                         </div>
 
                                         </div>
-                                        <div class="row mt-2">
+                                        <div class="row mt-3">
+                                            <div class="col-6">
+                                                <label class="form-check form-switch " >
+                                                    <input class="form-check-input ml-3 " data-id="{{$partner->id}}" @if($partner->translate_options==1) checked @endif value="1" type="checkbox" name="translate_options">
+                                                    <strong>Translate Options</strong>
+                                                </label>
+
+                                            </div>
+                                            <div class="col-6">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
                                             <div class="col-6"></div>
                                             <div class="col-6">
 
